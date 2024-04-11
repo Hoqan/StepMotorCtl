@@ -1,0 +1,82 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.31.0.0
+Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: RedmiBook,  , LIC=X96CK-Z0CW2-UHU8H-WS4ZM-RM73N-EL9AY
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.31.0.0
+Toolchain Path:  d:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.31.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.7.0
+Dialog DLL:      TCM.DLL V1.46.0.0
+ 
+<h2>Project:</h2>
+C:\Users\RedmiBook\Desktop\StepMotorCtlF4\MDK-ARM\StepMotorCtlF4.uvprojx
+Project File Date:  04/11/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'd:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'StepMotorCtlF4'
+compiling main.c...
+../Core/Inc/button.h(23): warning:  #1295-D: Deprecated declaration buttonUpdate - give arg types
+  void buttonUpdate();
+../Core/Inc/oled.h(23): warning:  #1295-D: Deprecated declaration Initial_LY096BG30 - give arg types
+  void Initial_LY096BG30();
+../Core/Inc/oled.h(27): warning:  #1295-D: Deprecated declaration Picture_1 - give arg types
+  void Picture_1();
+../Core/Inc/oled.h(28): warning:  #1295-D: Deprecated declaration IIC_Start - give arg types
+  void IIC_Start();
+../Core/Inc/oled.h(29): warning:  #1295-D: Deprecated declaration IIC_Stop - give arg types
+  void IIC_Stop();
+../Core/Inc/oled.h(37): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Core/Inc/gui.h(7): warning:  #1295-D: Deprecated declaration guiTask - give arg types
+  void guiTask();
+../Core/Inc/gui.h(9): warning:  #1-D: last line of file ends without a newline
+  #endif /* _GUI_H */
+../Core/Inc/control.h(4): warning:  #1295-D: Deprecated declaration ctlInit - give arg types
+  void ctlInit();
+../Core/Inc/control.h(6): warning:  #1295-D: Deprecated declaration ctlFixedUpd - give arg types
+  void ctlFixedUpd();
+../Core/Src/main.c: 10 warnings, 0 errors
+linking...
+Program Size: Code=21446 RO-data=626 RW-data=2224 ZI-data=2352  
+FromELF: creating hex file...
+"StepMotorCtlF4\StepMotorCtlF4.axf" - 0 Error(s), 10 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.7.0.pack
+                ARM.CMSIS.5.7.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.4.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.9.0.pack
+                Keil.STM32F4xx_DFP.2.9.0
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_StepMotorCtlF4
+  d:\Users\RedmiBook\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include
+  d:\Users\RedmiBook\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.9.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.4.0
+      Include file:  CMSIS\Core\Include\tz_context.h
+Build Time Elapsed:  00:00:03
+</pre>
+</body>
+</html>

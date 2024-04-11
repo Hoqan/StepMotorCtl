@@ -23,50 +23,17 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
+#include "button.h"
+#include "oled.h"
+#include "gui.h"
+#include "control.h"
+#include "pwm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define Pi 3.14159
-uint16_t xiFenNum = 3200;
-int32_t freq = 1;	// hz
-uint32_t pulNum = 0;
-uint32_t maxFreq;
-uint32_t accFreq;
-uint8_t freqStep;
-float motMaxSpd = 1;	// r/s
-float motAngleRad;
-float motAcc = 2;		// r/(s*s)
-float reduceRatio = 2;
-float whellR = 0.05;	// m
-uint8_t accStartFlg = 1;	// 开始加速事件
-uint8_t accFinished;		// 加速完成标志
-uint8_t dccStartFlg = 0;	// 开始减速事件
-uint8_t dccFinished;		// 减速完成标志
-//float distance = 0.5; // m
-//float realDistance = 0.4;
-//float k = 1;
-float jerk = 8;		// (m/(s*s*s))
-float acc = 0.8; 	// m/(s*s) 0~1
-float speed = 0.4;  // m/s 0.1~0.4
-float distance = 1; // m
-float realDistance = 0.4;
-float k = 1.15;
-volatile uint32_t cnt;
-uint32_t zhenShu;
-uint32_t xiaoShu;
-uint32_t startDeVelPulNum;
-
-typedef enum
-{
-	IDLE = 0U,
-	ACC,
-	CONSTANT,
-	DCC
-} MotionState;
-
-MotionState motionState = IDLE;
 
 /* USER CODE END PTD */
 
@@ -83,7 +50,32 @@ MotionState motionState = IDLE;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+volatile uint16_t capVal;
+volatile uint16_t minCapVal = 0xFFFF;
 
+volatile uint8_t capState;
+
+uint32_t dccJudgeCnt;
+uint32_t stopJudgeCnt;
+
+uint8_t yAxisStartFlg;
+uint8_t yAxisDccFlg;
+uint8_t yAxisStopFlg;
+
+uint8_t yAxisStarted;
+uint8_t yAxisDcced;
+uint8_t yAxisStoped;
+
+/* Captured Values */
+uint32_t               uwIC2Value1 = 0;
+uint32_t               uwIC2Value2 = 0;
+uint32_t               uwDiffCapture = 0;
+
+/* Capture index */
+uint16_t               uhCaptureIndex = 0;
+
+/* Frequency Value */
+uint32_t               uwFrequency = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,58 +118,51 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
+  MX_TIM8_Init();
   MX_TIM2_Init();
+  MX_TIM6_Init();
+  MX_TIM5_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-	htim1.Instance->ARR = 72000000 / freq - 1;
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 0);
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_Delay(100);
+	Initial_LY096BG30();
+  OLED_Clear();
+	setFreq(&htim1, 1);
+	setFreq(&htim8, 1);
+
 	__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
+	__HAL_TIM_CLEAR_IT(&htim5, TIM_IT_UPDATE);
 	
+//	zhenShu = pulNum / 65535;
+//	xiaoShu = pulNum % 65535;
+//	
+//	freqStep = accFreq * 0.002;
 
-	// distance = motAngleRad / reduceRatio * whellR;
-	// k = distance / realDistance;
-	motAngleRad = distance / whellR * reduceRatio * k;
-	motMaxSpd = speed / whellR * reduceRatio * k;
-	motAcc = acc / whellR * reduceRatio * k;
-//	motAngleRad = 2 * Pi * 30;
-	pulNum = motAngleRad * (xiFenNum / 2 / Pi);
-	maxFreq = motMaxSpd * (xiFenNum / 2 / Pi);
-	accFreq = motAcc * (xiFenNum / 2 / Pi);	
-	
-	zhenShu = pulNum / 65535;
-	xiaoShu = pulNum % 65535;
-	
-	freqStep = accFreq * 0.002;
+//	startDeVelPulNum = pulNum - (maxFreq * maxFreq / accFreq) / 2;
 
-	startDeVelPulNum = pulNum - (maxFreq * maxFreq / accFreq) / 2;
+//	if (zhenShu == 0)
+//		htim2.Instance->ARR = xiaoShu - 1;
+//	else
+//		htim2.Instance->ARR = 65535;
+	ctlInit();
 
-	if (zhenShu == 0)
-		htim2.Instance->ARR = xiaoShu - 1;
-	else
-		htim2.Instance->ARR = 65535;
+
 	HAL_TIM_Base_Start_IT(&htim2);	
-	HAL_TIM_Base_Start_IT(&htim3);
+	HAL_TIM_Base_Start_IT(&htim5);
+	HAL_TIM_Base_Start_IT(&htim6);  
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+
+	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		
-//		if (accFinished == 1)
-//		{
-//			freq += freqStep;
-//			if (freq >= maxFreq)
-//			{
-//				freq = maxFreq;
-//				accFinished = 0;
-//			}
-//					
-//			htim1.Instance->ARR = 72000000 / freq - 1;
-//			__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 72000000 / freq / 2 - 1);
-//			HAL_Delay(2);
-//		}
+		buttonUpdate();		
+		guiTask();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -194,16 +179,22 @@ void SystemClock_Config(void)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
+  /** Configure the main internal regulator output voltage
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -215,10 +206,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
   {
     Error_Handler();
   }
@@ -229,99 +220,145 @@ void  HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)    //定时器中断回调
 {
 	if(htim == &htim2)
 	{ 
-		if (zhenShu == 0)
-		{
-			HAL_TIM_Base_Stop(&htim2);
-			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);			 
-		}
-		else if (zhenShu > 0)
-		{
-			cnt++;
-			if (cnt == zhenShu)
-			{
-				htim2.Instance->ARR = xiaoShu - 1;
-			}
-		}
-		else if (cnt == zhenShu + 1)
-		{
-			HAL_TIM_Base_Stop(&htim2);
-			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-		}
+//		if (zhenShu == 0)
+//		{
+//			HAL_TIM_Base_Stop(&htim2);
+//			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);			 
+//		}
+//		else if (zhenShu > 0)
+//		{
+//			cnt++;
+//			if (cnt == zhenShu)
+//			{
+//				htim2.Instance->ARR = xiaoShu - 1;
+//			}
+//		}
+//		else if (cnt == zhenShu + 1)
+//		{
+//			HAL_TIM_Base_Stop(&htim2);
+//			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+//		}
 	}
 	 
-	if (htim == &htim3)
+	if (htim == &htim5)
 	{
-		switch (motionState)
-		{
-			case IDLE:
-				if (HAL_GPIO_ReadPin(IN_PULSE_GPIO_Port, IN_PULSE_Pin) == GPIO_PIN_SET)
-				{
-					accStartFlg = 1;
-					;;
-				}
-				else
-				{
-					accStartFlg = 0;
-					;;
-				}
-			
-				if (HAL_GPIO_ReadPin(IN_DIR_GPIO_Port, IN_DIR_Pin) == GPIO_PIN_SET)
-					HAL_GPIO_WritePin(OUT_DIR_GPIO_Port, OUT_DIR_Pin, GPIO_PIN_SET);
-				else
-					HAL_GPIO_WritePin(OUT_DIR_GPIO_Port, OUT_DIR_Pin, GPIO_PIN_RESET);
-				
-				if (accStartFlg)
-				{			
-					motionState = ACC;
-					dccFinished = 0;
-					accStartFlg = 0;
-				}
-				break;
-			case ACC:
-				freq += freqStep;
-	//			tsCnt++;
-	//			freq = accFreq * tsCnt * 0.002;
-				if (freq >= maxFreq)
-				{
-					freq = maxFreq;
-					accFinished = 1;
-					motionState = CONSTANT;
-				}
-				htim1.Instance->CNT = 0;		
-				htim1.Instance->ARR = 72000000 / freq - 1;
-				__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 72000000 / freq / 2 - 1);
-				break;
-			case CONSTANT:
-				// 由脉冲数（距离）计算减速
-				{
-					uint16_t tim2_cnt = htim2.Instance->CNT;
-					if (cnt * 65535 + tim2_cnt >= startDeVelPulNum)
-					{	
-						;
-						motionState = DCC;
-					}
-				}
-				// 由时间计算减速			
-				break;
-			case DCC:
-				freq -= freqStep;
-				if (freq <= 0)
-				{
-					freq = 1;
-					dccFinished = 1;
-					cnt = 0;
-					
-					//motionState = IDLE;
-				}
-				htim1.Instance->CNT = 0;
-				htim1.Instance->ARR = 72000000 / freq - 1;
-				__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 72000000 / freq / 2 - 1);
-				break;
-			default:
-				break;
-		}
-	}			
+//			HAL_TIM_Base_Stop(&htim2);
+//			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);		
+	}
+	
+	if (htim == &htim6)
+	{
+		ctlFixedUpd();
+	}
 }
+
+/**
+  * @brief  Conversion complete callback in non blocking mode 
+  * @param  htim: TIM handle
+  * @retval None
+  */
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+  {
+    if(uhCaptureIndex == 0)
+    {
+      /* Get the 1st Input Capture value */
+      uwIC2Value1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+      uhCaptureIndex = 1;
+    }
+    else if(uhCaptureIndex == 1)
+    {
+      /* Get the 2nd Input Capture value */
+      uwIC2Value2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1); 
+      
+      /* Capture computation */
+      if (uwIC2Value2 > uwIC2Value1)
+      {
+        uwDiffCapture = (uwIC2Value2 - uwIC2Value1); 
+      }
+      else  /* (uwIC2Value2 <= uwIC2Value1) */
+      {
+        uwDiffCapture = ((0xFFFF - uwIC2Value1) + uwIC2Value2); 
+      }
+
+      /* Frequency computation: for this example TIMx (TIM1) is clocked by
+         2xAPB2Clk */      
+      uwFrequency = (2*HAL_RCC_GetPCLK1Freq()/168) / uwDiffCapture;
+      uhCaptureIndex = 0;
+    }
+  }
+}
+
+//void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+//{
+//	if (htim == &htim3)
+//	{
+//		switch (capState)
+//		{
+//			case 0:  // 未捕获
+//				capState = 1;
+//			case 1:  // 捕获到下降沿
+//				capState = 2;
+//			  if (!yAxisStarted && yAxisStoped)
+//				{
+//			    yAxisStartFlg = 1;
+//					yAxisStarted = 1;
+//					yAxisDcced = 0;
+//					yAxisStoped = 0;
+//				}
+//				__HAL_TIM_DISABLE(&htim3);
+//				__HAL_TIM_SET_COUNTER(&htim3, 0);
+//			  TIM_RESET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1);
+//				TIM_SET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1, TIM_ICPOLARITY_RISING);
+//			  __HAL_TIM_ENABLE(&htim3);
+//				break;
+//			case 2:  // 捕获到上升沿
+//				capState = 0;
+//				capVal = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1);	
+//			  if (capVal < minCapVal)
+//				{
+//					minCapVal = capVal;
+//					stopJudgeCnt = 0;
+//				}
+//				else if (capVal > minCapVal + 10)  // TODO
+//				{
+//					dccJudgeCnt++;
+//					if (dccJudgeCnt >= 10)
+//					{
+//						if (!yAxisDcced)
+//						{
+//							yAxisDccFlg = 1;
+//							yAxisDcced = 1;
+//						}
+//					  dccJudgeCnt = 0;
+//					}
+//				}
+//				
+//				if (capVal > 60000)
+//				{
+//					stopJudgeCnt++;
+//					if (stopJudgeCnt >= 10)
+//					{
+//						stopJudgeCnt = 0;
+//						if (!yAxisStoped)
+//						{
+//							yAxisStopFlg = 1;
+//						  yAxisStoped = 1;
+//							yAxisStarted = 0;
+//						}
+//					  
+//					}
+//				}
+//				
+//				TIM_RESET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1);
+//			  TIM_SET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1, TIM_ICPOLARITY_FALLING);
+//			break;
+//			default:
+//				break;
+//		}
+//	}
+//}
 
 /* USER CODE END 4 */
 
