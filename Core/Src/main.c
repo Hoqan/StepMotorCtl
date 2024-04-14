@@ -30,6 +30,7 @@
 #include "gui.h"
 #include "control.h"
 #include "pwm.h"
+#include "pulin_sig.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,32 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-volatile uint16_t capVal;
-volatile uint16_t minCapVal = 0xFFFF;
 
-volatile uint8_t capState;
-
-uint32_t dccJudgeCnt;
-uint32_t stopJudgeCnt;
-
-uint8_t yAxisStartFlg;
-uint8_t yAxisDccFlg;
-uint8_t yAxisStopFlg;
-
-uint8_t yAxisStarted;
-uint8_t yAxisDcced;
-uint8_t yAxisStoped;
-
-/* Captured Values */
-uint32_t               uwIC2Value1 = 0;
-uint32_t               uwIC2Value2 = 0;
-uint32_t               uwDiffCapture = 0;
-
-/* Capture index */
-uint16_t               uhCaptureIndex = 0;
-
-/* Frequency Value */
-uint32_t               uwFrequency = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -153,7 +129,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
 
-	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+	// HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
   /* USER CODE END 2 */
 
@@ -216,6 +192,8 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+
 void  HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)    //定时器中断回调函数
 {
 	if(htim == &htim2)
@@ -249,6 +227,7 @@ void  HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)    //定时器中断回调
 	if (htim == &htim6)
 	{
 		ctlFixedUpd();
+		
 	}
 }
 
@@ -261,32 +240,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
   {
-    if(uhCaptureIndex == 0)
-    {
-      /* Get the 1st Input Capture value */
-      uwIC2Value1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-      uhCaptureIndex = 1;
-    }
-    else if(uhCaptureIndex == 1)
-    {
-      /* Get the 2nd Input Capture value */
-      uwIC2Value2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1); 
-      
-      /* Capture computation */
-      if (uwIC2Value2 > uwIC2Value1)
-      {
-        uwDiffCapture = (uwIC2Value2 - uwIC2Value1); 
-      }
-      else  /* (uwIC2Value2 <= uwIC2Value1) */
-      {
-        uwDiffCapture = ((0xFFFF - uwIC2Value1) + uwIC2Value2); 
-      }
-
-      /* Frequency computation: for this example TIMx (TIM1) is clocked by
-         2xAPB2Clk */      
-      uwFrequency = (2*HAL_RCC_GetPCLK1Freq()/168) / uwDiffCapture;
-      uhCaptureIndex = 0;
-    }
+		// freqCalcHandler();
   }
 }
 

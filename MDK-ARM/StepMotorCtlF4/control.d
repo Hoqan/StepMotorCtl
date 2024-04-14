@@ -37,3 +37,6 @@ stepmotorctlf4\control.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.
 stepmotorctlf4\control.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 stepmotorctlf4\control.o: ../Core/Inc/pwm.h
 stepmotorctlf4\control.o: ../Core/Inc/tim.h
+stepmotorctlf4\control.o: ../Core/Inc/pulin_sig.h
+stepmotorctlf4\control.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+stepmotorctlf4\control.o: ../Core/Inc/gui.h

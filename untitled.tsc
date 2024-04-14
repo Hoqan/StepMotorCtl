@@ -1,5 +1,5 @@
 #STM Touch Studio user settings - do not edit
-#Thu Apr 11 01:36:06 CST 2024
+#Sat Apr 13 19:00:53 CST 2024
 ExprVariable.Col0ModelIdx=0
 ExprVariable.Col0Width=15
 ExprVariable.Col1ModelIdx=1
@@ -11,7 +11,7 @@ ExprVariable.Col3Width=91
 ExprVariable.Col4ModelIdx=4
 ExprVariable.Col4Width=40
 ExprVariable.Number=0
-GdbVar.ExecDate=1712769067028
+GdbVar.ExecDate=1713005101622
 GdbVar.LastExecRelative=MDK-ARM\\StepMotorCtlF4\\StepMotorCtlF4.axf
 GdbVar.Version=1
 GeneralPurpose.HorizontalSplit=350
@@ -95,8 +95,8 @@ VarViewer.Version=4
 VarViewer1.DisplayMode=Curve
 VarViewer1.Hexa=false
 VarViewer1.Name=VarViewer1
-VarViewer1.Range.Low=-24400.0
-VarViewer1.Range.Up=12100.0
+VarViewer1.Range.Low=0.0
+VarViewer1.Range.Up=35000.0
 VarViewer1.SecondScreen=false
 VarViewer1.Var.Nb=1
 VarViewer1.Var0.Name=uwFrequency
@@ -114,7 +114,7 @@ Variable.Col4Width=40
 Variable.Number=1
 Variable.Version=5
 Variable0.AcqMode=false
-Variable0.Address=536873116
+Variable0.Address=536873096
 Variable0.Color=0x999999
 Variable0.Name=uwFrequency
 Variable0.Type=unsigned 32-bit

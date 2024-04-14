@@ -39,3 +39,5 @@ stepmotorctlf4\main.o: ../Core/Inc/oled.h
 stepmotorctlf4\main.o: ../Core/Inc/gui.h
 stepmotorctlf4\main.o: ../Core/Inc/control.h
 stepmotorctlf4\main.o: ../Core/Inc/pwm.h
+stepmotorctlf4\main.o: ../Core/Inc/pulin_sig.h
+stepmotorctlf4\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

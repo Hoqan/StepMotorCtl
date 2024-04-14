@@ -22,37 +22,29 @@ Dialog DLL:      TCM.DLL V1.46.0.0
  
 <h2>Project:</h2>
 C:\Users\RedmiBook\Desktop\StepMotorCtlF4\MDK-ARM\StepMotorCtlF4.uvprojx
-Project File Date:  04/11/2024
+Project File Date:  04/13/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'd:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'StepMotorCtlF4'
-compiling main.c...
-../Core/Inc/button.h(23): warning:  #1295-D: Deprecated declaration buttonUpdate - give arg types
-  void buttonUpdate();
-../Core/Inc/oled.h(23): warning:  #1295-D: Deprecated declaration Initial_LY096BG30 - give arg types
-  void Initial_LY096BG30();
-../Core/Inc/oled.h(27): warning:  #1295-D: Deprecated declaration Picture_1 - give arg types
-  void Picture_1();
-../Core/Inc/oled.h(28): warning:  #1295-D: Deprecated declaration IIC_Start - give arg types
-  void IIC_Start();
-../Core/Inc/oled.h(29): warning:  #1295-D: Deprecated declaration IIC_Stop - give arg types
-  void IIC_Stop();
-../Core/Inc/oled.h(37): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/gui.h(7): warning:  #1295-D: Deprecated declaration guiTask - give arg types
-  void guiTask();
-../Core/Inc/gui.h(9): warning:  #1-D: last line of file ends without a newline
-  #endif /* _GUI_H */
+compiling control.c...
 ../Core/Inc/control.h(4): warning:  #1295-D: Deprecated declaration ctlInit - give arg types
   void ctlInit();
 ../Core/Inc/control.h(6): warning:  #1295-D: Deprecated declaration ctlFixedUpd - give arg types
   void ctlFixedUpd();
-../Core/Src/main.c: 10 warnings, 0 errors
+../Core/Inc/motion_param.h(17): warning:  #1295-D: Deprecated declaration motionParamUpd - give arg types
+  void motionParamUpd();
+../Core/Inc/button.h(23): warning:  #1295-D: Deprecated declaration buttonUpdate - give arg types
+  void buttonUpdate();
+../Core/Inc/gui.h(13): warning:  #1295-D: Deprecated declaration guiTask - give arg types
+  void guiTask();
+../Core/Inc/gui.h(15): warning:  #1-D: last line of file ends without a newline
+  #endif /* _GUI_H */
+..\Core\Src\control.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=21446 RO-data=626 RW-data=2224 ZI-data=2352  
+Program Size: Code=20166 RO-data=626 RW-data=2240 ZI-data=2352  
 FromELF: creating hex file...
-"StepMotorCtlF4\StepMotorCtlF4.axf" - 0 Error(s), 10 Warning(s).
+"StepMotorCtlF4\StepMotorCtlF4.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 

@@ -15,12 +15,6 @@ extern uint8_t mode;
 
 #define SIZE_X 6
 
-typedef enum
-{
-	NORMAL,
-	SETTINGS
-} GuiState;
-
 typedef struct
 {
 	int8_t a;

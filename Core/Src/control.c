@@ -5,6 +5,8 @@
 #include "pwm.h"
 #include "tim.h"
 #include "gpio.h"
+#include "pulin_sig.h"
+#include "gui.h"
 
 extern uint8_t yAxisStartFlg;
 extern uint8_t yAxisDccFlg;
@@ -178,13 +180,13 @@ void yAxisManuFlgInput()
 		if (button.FORWARD)
 		{
 			yDir = 1;
-			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
 			*yAxis.flgs.pAccStartFlg = 1;
 		}
 		else if (button.BACK)
 		{
 			yDir = 2;
-			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);
 			*yAxis.flgs.pAccStartFlg = 1;
 		}
 		else
@@ -219,20 +221,36 @@ void yAxisManuFlgInput()
  */
 void yAxisAutoFlgInput()
 {
-	// 任意状态，同步主机方向
-	if (HAL_GPIO_ReadPin(IN5V_DIR_GPIO_Port, IN5V_DIR_Pin) == GPIO_PIN_SET) // TODO
-		HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
-	else
-		HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);	
-	
 	if (yAxis.state == PROFILE_IDLE)
 	{
-		// TODO
-		//if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_RESET)
-		if (yAxisStartFlg)
+		// Old method
+		// if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_RESET)
+		
+		if (button.FORWARD)
 		{
-			yAxisStartFlg = 0;
+			yDir = 1;
+			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
 			*yAxis.flgs.pAccStartFlg = 1;
+		}
+		else if (button.BACK)
+		{
+			yDir = 2;
+			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);
+			*yAxis.flgs.pAccStartFlg = 1;
+		}
+		else
+		{
+			yDir = 0;
+		}
+		
+		if (isFreqStart())
+		{
+			*yAxis.flgs.pAccStartFlg = 1;
+			// 空闲状态，同步主机方向
+			if (HAL_GPIO_ReadPin(IN5V_DIR_GPIO_Port, IN5V_DIR_Pin) == GPIO_PIN_SET) // TODO
+				HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
+			else
+				HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);	
 		}
 	}
 	else if (yAxis.state == PROFILE_CONSTANT)
@@ -243,11 +261,21 @@ void yAxisAutoFlgInput()
 //		{
 //			yAxis.state = PROFILE_DCC;
 //		}
-		if (yAxisDccFlg)
+		if ((!button.FORWARD && (yDir == 1))
+				|| (!button.BACK && (yDir == 2)))
 		{
-			yAxisDccFlg = 0;
-			yAxis.state = PROFILE_DCC;
+			*yAxis.flgs.pDccStartFlg = 1;
+		}		
+		
+		if (yDir == 0)
+		{
+			if (isFreqDcc())
+			{
+				// yAxis.state = PROFILE_DCC;
+				*yAxis.flgs.pDccStartFlg = 1;
+			}
 		}
+		
 	}
   else if (yAxis.state == PROFILE_DCC)
 	{
@@ -273,11 +301,15 @@ void yAxisAutoFlgInput()
 //				{
 //					stopJudgeCnt = 0;;
 //				}
-				if (yAxisStopFlg)
-				{
-					yAxisStopFlg = 0;
-					yAxis.state = PROFILE_IDLE;
-				}
+//				if (yAxisStopFlg)
+//				{
+//					yAxisStopFlg = 0;
+//					yAxis.state = PROFILE_IDLE;
+//				}
+	if (yAxis.flgs.dccFinished)
+	{
+		yAxis.state = PROFILE_IDLE;
+	}
 //				break;
 //			default:
 //				break;
@@ -320,11 +352,16 @@ void ctlInit()
 	xAxis.flgs.pAccStartFlg = &xAccStartFlg;
 	xAxis.flgs.pDccStartFlg = &xDccStartFlg;
 	xAxis.flgs.pIdleFlg = &xIdleFlg;
-	xAxis.velProfPa.accFreq = accFreq;
-	xAxis.velProfPa.accFreqStep = freqStep;
-	xAxis.velProfPa.maxFreq = maxFreq;
-	xAxis.velProfPa.dccFreq = accFreq;
-	xAxis.velProfPa.dccFreqStep = freqStep;
+//	xAxis.velProfPa.accFreq = accFreq;
+//	xAxis.velProfPa.accFreqStep = freqStep;
+//	xAxis.velProfPa.maxFreq = maxFreq;
+//	xAxis.velProfPa.dccFreq = accFreq;
+//	xAxis.velProfPa.dccFreqStep = freqStep;
+	xAxis.velProfPa.accFreq = 2 * accFreq;
+	xAxis.velProfPa.accFreqStep = xAxis.velProfPa.accFreq  * 0.002;
+	xAxis.velProfPa.maxFreq = 2 * maxFreq;
+	xAxis.velProfPa.dccFreq = 2 * accFreq;
+	xAxis.velProfPa.dccFreqStep = xAxis.velProfPa.dccFreq  * 0.002;
 	
 	yAxis.curFreq = 1;
 	yAxis.outputFreq = 1;
@@ -348,12 +385,14 @@ void ctlFixedUpd()
 	switch (state)
 	{
 		case INIT:
-				if (HAL_GPIO_ReadPin(RIGHT_LMT_GPIO_Port, RIGHT_LMT_Pin) == GPIO_PIN_SET)
+				if (HAL_GPIO_ReadPin(LEFT_LMT_GPIO_Port, LEFT_LMT_Pin) == GPIO_PIN_SET)
 				{
-					// X轴向右移动
-					HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_RESET);
-					xAxis.curFreq = 2000;
-					xAxis.outputFreq = 2000;
+					// X轴向左移动
+					HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_SET);
+					xAxis.curFreq += 50;
+					if (xAxis.curFreq >= 6000)
+						xAxis.curFreq = 6000;
+					xAxis.outputFreq = xAxis.curFreq;
 				}
 				else
 				{
@@ -376,8 +415,11 @@ void ctlFixedUpd()
 			}
 			break;
 		case MANU:
+			if (guiState == SETTINGS)
+				return;
 			xAxisManuFlgInput();
-			yAxisManuFlgInput();
+			//yAxisManuFlgInput();
+		  yAxisAutoFlgInput();
 			if (yAxis.state == PROFILE_IDLE
 					&& xAxis.state == PROFILE_IDLE
 					&& mode == 2)
@@ -391,6 +433,8 @@ void ctlFixedUpd()
 			setFreq(&htim8, yAxis.outputFreq);
 			break;
 		case AUTO:
+			if (guiState == SETTINGS)
+				return;
 			xAxisAutoFlgInput();
 			yAxisAutoFlgInput();
 		  if (yAxis.state == PROFILE_IDLE && mode == 1)

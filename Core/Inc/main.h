@@ -87,6 +87,8 @@ void Error_Handler(void);
 #define SUB_GPIO_Port GPIOG
 #define SETTINGS_Pin GPIO_PIN_13
 #define SETTINGS_GPIO_Port GPIOG
+#define IN5V_PUL_Pin GPIO_PIN_4
+#define IN5V_PUL_GPIO_Port GPIOB
 #define IN5V_DIR_Pin GPIO_PIN_5
 #define IN5V_DIR_GPIO_Port GPIOB
 #define AUTO_Pin GPIO_PIN_1

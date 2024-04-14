@@ -15,10 +15,11 @@ float reduceRatio = 2;
 float whellR = 0.05;	// m
 
 float jerk = 8;		// (m/(s*s*s))
-float acc = 0.8; 	// m/(s*s) 0~1
-float speed = 0.4;  // m/s 0.1~0.4
+float acc = 2; 	// m/(s*s) 0~1
+float speed = 0.2;  // m/s 0.1~0.4
 float distance = 1; // m
-float realDistance = 0.8696;
+//float realDistance = 0.8696;
+float realDistance = 0.970;
 float k = 1.15;
 float equalVal;	// Âö³åµ±Á¿
 

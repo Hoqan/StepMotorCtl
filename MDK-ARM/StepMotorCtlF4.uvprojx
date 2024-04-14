@@ -429,6 +429,11 @@
               <FilePath>..\Core\Src\motion_param.c</FilePath>
             </File>
             <File>
+              <FileName>pulin_sig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\pulin_sig.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
