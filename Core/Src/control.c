@@ -385,10 +385,10 @@ void ctlFixedUpd()
 	switch (state)
 	{
 		case INIT:
-				if (HAL_GPIO_ReadPin(LEFT_LMT_GPIO_Port, LEFT_LMT_Pin) == GPIO_PIN_SET)
+				if (HAL_GPIO_ReadPin(RIGHT_LMT_GPIO_Port, RIGHT_LMT_Pin) == GPIO_PIN_SET)
 				{
-					// X轴向左移动
-					HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_SET);
+					// X轴向右移动
+					HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_RESET);
 					xAxis.curFreq += 50;
 					if (xAxis.curFreq >= 6000)
 						xAxis.curFreq = 6000;
