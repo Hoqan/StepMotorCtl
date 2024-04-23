@@ -14,6 +14,6 @@ extern uint32_t accFreq;
 extern uint8_t freqStep;
 extern float equalVal;	// Âö³åµ±Á¿
 
-void motionParamUpd();
+void motionParamUpd(void);
 
 #endif /* _MOTION_PARAM_H */

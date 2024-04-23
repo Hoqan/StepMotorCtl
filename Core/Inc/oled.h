@@ -20,13 +20,13 @@
 #define X_WIDTH 	128
 #define Y_WIDTH 	64
 
-void Initial_LY096BG30();
+void Initial_LY096BG30(void);
 void Delay_50ms(unsigned int Del_50ms);
 void Delay_1ms(unsigned int Del_1ms);
 void fill_picture(unsigned char fill_Data);
-void Picture_1();
-void IIC_Start();
-void IIC_Stop();
+void Picture_1(void);
+void IIC_Start(void);
+void IIC_Stop(void);
 void Write_IIC_Command(unsigned char IIC_Command);
 void Write_IIC_Data(unsigned char IIC_Data);
 uint8_t Write_IIC_Byte(unsigned char IIC_Byte);

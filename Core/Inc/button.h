@@ -20,6 +20,6 @@ typedef struct
 extern Button button;
 
 
-void buttonUpdate();
+void buttonUpdate(void);
 	
 #endif /* _BUTTON_H */

@@ -32,7 +32,7 @@ bool isFreqStart()
 	{
 		started = true;
 	}
-#elif	
+#else
 	if (freqUpdated)
 	{
 		freqUpdated = 0;
@@ -78,7 +78,7 @@ bool isFreqDcc()
 	{
 		cnt = 0;
 	}
-#elif
+#else
 	if (freqUpdated)
 	{
 		freqUpdated = false;
@@ -119,8 +119,8 @@ void judgeMaxFreq()
 //	}
 }
 
-uint8_t isStartDcc()
-{
+//uint8_t isStartDcc()
+//{
 //	static uint32_t cnt = 0;
 //	static uint32_t prevFreq = 0;
 //	uint8_t started = 0;
@@ -141,7 +141,7 @@ uint8_t isStartDcc()
 //	}
 //	
 //	return started;
-}
+//}
 
 void freqCalcHandler()
 {

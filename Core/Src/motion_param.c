@@ -1,7 +1,7 @@
 #include "motion_param.h"
 #include "trap_vel_profile.h"
 
-#define Pi 3.14159
+#define Pi 3.14159f
 uint16_t xiFenNum = 3200;
 int32_t freq = 1;	// hz
 uint32_t pulNum = 0;
@@ -38,7 +38,7 @@ void motionParamUpd()
 	accFreq = motAcc * (xiFenNum / 2 / Pi);	
 	
 	freqStep = accFreq * 0.002;
-	equalVal = 0.001 / whellR * reduceRatio * k * (xiFenNum / 2 / Pi);
+	equalVal = 0.001f / whellR * reduceRatio * k * (xiFenNum / 2 / Pi);
 	
 	yAxis.velProfPa.accFreq = accFreq;
 	yAxis.velProfPa.accFreqStep = freqStep;

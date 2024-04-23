@@ -10,6 +10,6 @@ typedef enum
 extern GuiState guiState;
 
 
-void guiTask();
+void guiTask(void);
 
 #endif /* _GUI_H */
