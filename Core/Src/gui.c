@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include "gui.h"
 #include "button.h"
-#include "oled.h"
+#include "./sdram/bsp_sdram.h"
+#include <stdlib.h>
+#include "./lcd/bsp_lcd.h"
+#include "./touch/bsp_touch_gtxx.h"
 #include "motion_param.h"
 
 extern uint8_t mode;
@@ -213,6 +216,36 @@ static void addSubDeal(SingleNum *singleNum)
 		}
 }
 
+void guiInit(void)
+{
+    /* LCD 端口初始化 */ 
+    LCD_Init();
+    /* LCD 第一层初始化 */ 
+    LCD_LayerInit(0, LCD_FB_START_ADDRESS,ARGB8888);
+	/* LCD 第二层初始化 */ 
+    LCD_LayerInit(1, LCD_FB_START_ADDRESS+(LCD_GetXSize()*LCD_GetYSize()*4),ARGB8888);
+    /* 使能LCD，包括开背光 */ 
+    LCD_DisplayOn(); 
+
+    /* 选择LCD第一层 */
+    LCD_SelectLayer(0);
+
+    /* 第一层清屏，显示全黑 */ 
+    LCD_Clear(LCD_COLOR_BLACK);  
+
+    /* 选择LCD第二层 */
+    LCD_SelectLayer(1);
+
+    /* 第二层清屏，显示全黑 */ 
+    LCD_Clear(LCD_COLOR_TRANSPARENT);
+
+    /* 配置第一和第二层的透明度,最小值为0，最大值为255*/
+    LCD_SetTransparency(0, 255);
+    LCD_SetTransparency(1, 0);
+		
+		LCD_DisplayStringLine(10, (uint8_t *)"hello");
+}
+
 void guiTask()
 {
 	uint32_t varTmp = 0;
@@ -229,8 +262,9 @@ void guiTask()
 		case SETTINGS:
 			if (button.CONFIRM)
 			{
-				OLED_Set_Pos(pos.x, pos.y);
-				Write_IIC_Data(0x00);
+				// TODO
+//				OLED_Set_Pos(pos.x, pos.y);
+//				Write_IIC_Data(0x00);
 				motionParamUpd();  // 更新参数
 				guiState = NORMAL;
 			}
@@ -269,8 +303,8 @@ void guiTask()
 					break;
 			}
 			
-			OLED_Set_Pos(pos.x, pos.y);
-			Write_IIC_Data(0xff);
+//			OLED_Set_Pos(pos.x, pos.y);
+//			Write_IIC_Data(0xff);
 			break;
 		default:
 			break;
@@ -282,11 +316,12 @@ void guiTask()
 	sprintf(realPosBuff, "realdist:%5d ", (int)(realDistance*1000));
 	sprintf(modeBuff, "mode:    %5d", mode);
 	sprintf(equalValBuff, "dangliang:  %.2f", equalVal);
-	OLED_ShowString(0, 0, (uint8_t *)accBuff);
-	OLED_ShowString(0, 1, (uint8_t *)velBuff);
-	OLED_ShowString(0, 2, (uint8_t *)posBuff);
-	OLED_ShowString(0, 3, (uint8_t *)realPosBuff);
-	OLED_ShowString(0, 4, (uint8_t *)modeBuff);
-	OLED_ShowString(0, 5, (uint8_t *)equalValBuff);
+
+	LCD_DisplayStringLine(0, (uint8_t *)accBuff);
+	LCD_DisplayStringLine(1, (uint8_t *)velBuff);
+	LCD_DisplayStringLine(2, (uint8_t *)posBuff);
+	LCD_DisplayStringLine(3, (uint8_t *)realPosBuff);
+	LCD_DisplayStringLine(4, (uint8_t *)modeBuff);
+	LCD_DisplayStringLine(5, (uint8_t *)equalValBuff);
 	// OLED_Clear();
 }

@@ -9,6 +9,7 @@ typedef enum
 
 extern GuiState guiState;
 
+void guiInit(void);
 
 void guiTask(void);
 

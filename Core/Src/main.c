@@ -101,25 +101,13 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	HAL_Delay(100);
-	Initial_LY096BG30();
-  OLED_Clear();
+	guiInit();
 	setFreq(&htim1, 1);
 	setFreq(&htim8, 1);
 
 	__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
 	__HAL_TIM_CLEAR_IT(&htim5, TIM_IT_UPDATE);
 	
-//	zhenShu = pulNum / 65535;
-//	xiaoShu = pulNum % 65535;
-//	
-//	freqStep = accFreq * 0.002;
-
-//	startDeVelPulNum = pulNum - (maxFreq * maxFreq / accFreq) / 2;
-
-//	if (zhenShu == 0)
-//		htim2.Instance->ARR = xiaoShu - 1;
-//	else
-//		htim2.Instance->ARR = 65535;
 	ctlInit();
 
 

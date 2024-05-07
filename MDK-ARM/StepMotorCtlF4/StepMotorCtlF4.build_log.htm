@@ -1,0 +1,98 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.28.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information:  ,  , LIC=EXJT4-FUSCA-QDUKD-8KU6A-5CIL6-1GJQT
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.28.0.0
+Toolchain Path:  d:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.28.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      Segger\JL2CM3.dll V2.99.36.0
+Dialog DLL:      TCM.DLL V1.36.2.0
+ 
+<h2>Project:</h2>
+E:\StepMotorCtl\2-Software\StepMotorCtl\MDK-ARM\StepMotorCtlF4.uvprojx
+Project File Date:  05/07/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'd:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'StepMotorCtlF4'
+compiling stm32f4xx_hal_exti.c...
+"no source": Error:  #5: cannot open source input file "../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c": No such file or directory
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c: 0 warnings, 1 error
+compiling bsp_i2c_touch.c...
+..\Core\Src\bsp_lcd\touch\bsp_i2c_touch.c(20): error:  #5: cannot open source input file "./usart/bsp_debug_usart.h": No such file or directory
+  #include "./usart/bsp_debug_usart.h"
+..\Core\Src\bsp_lcd\touch\bsp_i2c_touch.c: 0 warnings, 1 error
+compiling tim.c...
+../Core/Src/tim.c(56): error:  #136: struct "<unnamed>"  has no field "AutoReloadPreload"
+    htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(56): error:  #20: identifier "TIM_AUTORELOAD_PRELOAD_DISABLE" is undefined
+    htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(87): warning:  #223-D: function "__HAL_TIM_DISABLE_OCxPRELOAD" declared implicitly
+    __HAL_TIM_DISABLE_OCxPRELOAD(&htim1, TIM_CHANNEL_1);
+../Core/Src/tim.c(125): error:  #136: struct "<unnamed>"  has no field "AutoReloadPreload"
+    htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(125): error:  #20: identifier "TIM_AUTORELOAD_PRELOAD_DISABLE" is undefined
+    htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(137): warning:  #223-D: function "HAL_TIM_SlaveConfigSynchro" declared implicitly
+    if (HAL_TIM_SlaveConfigSynchro(&htim2, &sSlaveConfig) != HAL_OK)
+../Core/Src/tim.c(171): error:  #136: struct "<unnamed>"  has no field "AutoReloadPreload"
+    htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(171): error:  #20: identifier "TIM_AUTORELOAD_PRELOAD_DISABLE" is undefined
+    htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(211): error:  #136: struct "<unnamed>"  has no field "AutoReloadPreload"
+    htim5.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(211): error:  #20: identifier "TIM_AUTORELOAD_PRELOAD_DISABLE" is undefined
+    htim5.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(218): warning:  #223-D: function "HAL_TIM_SlaveConfigSynchro" declared implicitly
+    if (HAL_TIM_SlaveConfigSynchro(&htim5, &sSlaveConfig) != HAL_OK)
+../Core/Src/tim.c(250): error:  #136: struct "<unnamed>"  has no field "AutoReloadPreload"
+    htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(250): error:  #20: identifier "TIM_AUTORELOAD_PRELOAD_DISABLE" is undefined
+    htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(288): error:  #136: struct "<unnamed>"  has no field "AutoReloadPreload"
+    htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(288): error:  #20: identifier "TIM_AUTORELOAD_PRELOAD_DISABLE" is undefined
+    htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+../Core/Src/tim.c(319): warning:  #223-D: function "__HAL_TIM_DISABLE_OCxPRELOAD" declared implicitly
+    __HAL_TIM_DISABLE_OCxPRELOAD(&htim8, TIM_CHANNEL_1);
+../Core/Src/tim.c: 4 warnings, 12 errors
+"StepMotorCtlF4\StepMotorCtlF4.axf" - 14 Error(s), 4 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.5.1.pack
+                ARM.CMSIS.5.5.1
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.2.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.12.0.pack
+                Keil.STM32F4xx_DFP.2.12.0
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_StepMotorCtlF4
+  d:\Users\YuanHaoqiang\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include
+  d:\Users\YuanHaoqiang\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.2.0
+Target not created.
+Build Time Elapsed:  00:00:03
+</pre>
+</body>
+</html>
