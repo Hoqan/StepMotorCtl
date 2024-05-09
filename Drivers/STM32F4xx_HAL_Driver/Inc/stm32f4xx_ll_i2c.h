@@ -6,29 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -853,8 +836,8 @@ __STATIC_INLINE uint32_t LL_I2C_GetClockPeriod(I2C_TypeDef *I2Cx)
 __STATIC_INLINE void LL_I2C_ConfigSpeed(I2C_TypeDef *I2Cx, uint32_t PeriphClock, uint32_t ClockSpeed,
                                         uint32_t DutyCycle)
 {
-  register uint32_t freqrange = 0x0U;
-  register uint32_t clockconfig = 0x0U;
+  uint32_t freqrange = 0x0U;
+  uint32_t clockconfig = 0x0U;
 
   /* Compute frequency range */
   freqrange = __LL_I2C_FREQ_HZ_TO_MHZ(PeriphClock);
@@ -1309,7 +1292,7 @@ __STATIC_INLINE uint32_t LL_I2C_IsActiveFlag_ADDR(I2C_TypeDef *I2Cx)
 
 /**
   * @brief  Indicate the status of 10-bit header sent (master mode).
-  * @note   RESET: When no ADD10 event occured.
+  * @note   RESET: When no ADD10 event occurred.
   *         SET: When the master has sent the first address byte (header).
   * @rmtoll SR1          ADD10         LL_I2C_IsActiveFlag_ADD10
   * @param  I2Cx I2C Instance.
@@ -1484,7 +1467,7 @@ __STATIC_INLINE uint32_t LL_I2C_IsActiveSMBusFlag_SMBDEFAULT(I2C_TypeDef *I2Cx)
 
 /**
   * @brief  Indicate the status of General call address reception (Slave mode).
-  * @note   RESET: No Generall call address
+  * @note   RESET: No General call address
   *         SET: General call address received.
   * @note   This status is cleared by hardware after a STOP condition or repeated START condition.
   * @rmtoll SR2          GENCALL       LL_I2C_IsActiveFlag_GENCALL
@@ -1905,4 +1888,3 @@ void LL_I2C_StructInit(LL_I2C_InitTypeDef *I2C_InitStruct);
 
 #endif /* __STM32F4xx_LL_I2C_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

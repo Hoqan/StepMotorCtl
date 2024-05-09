@@ -15,7 +15,7 @@ stepmotorctlf4\main.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 stepmotorctlf4\main.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-stepmotorctlf4\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+stepmotorctlf4\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
@@ -23,6 +23,7 @@ stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_crc.h
@@ -70,13 +71,18 @@ stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 stepmotorctlf4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_hcd.h
-stepmotorctlf4\main.o: ../Core/Inc/tim.h
 stepmotorctlf4\main.o: ../Core/Inc/gpio.h
 stepmotorctlf4\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+stepmotorctlf4\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 stepmotorctlf4\main.o: ../Core/Inc/button.h
 stepmotorctlf4\main.o: ../Core/Inc/oled.h
 stepmotorctlf4\main.o: ../Core/Inc/gui.h
 stepmotorctlf4\main.o: ../Core/Inc/control.h
 stepmotorctlf4\main.o: ../Core/Inc/pwm.h
+stepmotorctlf4\main.o: ../Core/Inc/tim.h
 stepmotorctlf4\main.o: ../Core/Inc/pulin_sig.h
 stepmotorctlf4\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+stepmotorctlf4\main.o: ..\Core\Src\bsp_lcd\./lcd/bsp_lcd.h
+stepmotorctlf4\main.o: ..\Core\Src\bsp_lcd\./sdram/bsp_sdram.h
+stepmotorctlf4\main.o: ..\Core\Src\bsp_lcd\./fonts/fonts.h
+stepmotorctlf4\main.o: ..\Core\Src\bsp_lcd\./touch/bsp_touch_gtxx.h

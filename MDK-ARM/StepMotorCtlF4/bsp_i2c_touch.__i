@@ -1,6 +1,0 @@
---c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Core\Src\bsp_lcd
--I.\RTE\_StepMotorCtlF4
--Id:\Users\YuanHaoqiang\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include
--Id:\Users\YuanHaoqiang\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
--D__UVISION_VERSION="528" -D_RTE_ -DSTM32F429xx -DUSE_HAL_DRIVER -DSTM32F429xx -DUSE_STM32F429I_DISCO
--o stepmotorctlf4\bsp_i2c_touch.o --omf_browse stepmotorctlf4\bsp_i2c_touch.crf --depend stepmotorctlf4\bsp_i2c_touch.d "..\Core\Src\bsp_lcd\touch\bsp_i2c_touch.c"

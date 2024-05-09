@@ -14,7 +14,7 @@ stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-stepmotorctlf4\stm32f4xx_hal_dma_ex.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+stepmotorctlf4\stm32f4xx_hal_dma_ex.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
@@ -22,6 +22,7 @@ stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 stepmotorctlf4\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_crc.h

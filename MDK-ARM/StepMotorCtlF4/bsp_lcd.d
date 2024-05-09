@@ -15,7 +15,7 @@ stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-stepmotorctlf4\bsp_lcd.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+stepmotorctlf4\bsp_lcd.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
@@ -23,6 +23,7 @@ stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_crc.h
@@ -71,6 +72,7 @@ stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 stepmotorctlf4\bsp_lcd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_hcd.h
 stepmotorctlf4\bsp_lcd.o: ..\Core\Src\bsp_lcd\./sdram/bsp_sdram.h
+stepmotorctlf4\bsp_lcd.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 stepmotorctlf4\bsp_lcd.o: ..\Core\Src\bsp_lcd\./fonts/fonts.h
 stepmotorctlf4\bsp_lcd.o: ..\Core\Src\bsp_lcd\./fonts//font24.c
 stepmotorctlf4\bsp_lcd.o: ..\Core\Src\bsp_lcd\./fonts//font20.c
