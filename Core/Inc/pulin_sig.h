@@ -8,6 +8,6 @@ bool isFreqStart(void);
 
 bool isFreqDcc(void);
 
-void freqCalcHandler(void);
+//void freqCalcHandler(void);
 
 #endif /* _PULIN_SIG_H */

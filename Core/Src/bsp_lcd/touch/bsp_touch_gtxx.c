@@ -152,35 +152,35 @@ static int32_t GTP_I2C_Read(uint8_t client_addr, uint8_t *buf, int32_t len)
   *		@arg len:    GTP_ADDR_LENGTH + write bytes count（寄存器地址长度+写入的数据字节数）
   * @retval  i2c_msgs传输结构体的个数，1为成功，其它为失败
   */
-static int32_t GTP_I2C_Write(uint8_t client_addr,uint8_t *buf,int32_t len)
-{
-    struct i2c_msg msg;
-    int32_t ret = -1;
-    int32_t retries = 0;
+//static int32_t GTP_I2C_Write(uint8_t client_addr,uint8_t *buf,int32_t len)
+//{
+//    struct i2c_msg msg;
+//    int32_t ret = -1;
+//    int32_t retries = 0;
 
-    GTP_DEBUG_FUNC();
-    /*一个写数据的过程只需要一个传输过程:
-     * 1. IIC连续 写入 数据寄存器地址及数据
-     * */
-    msg.flags = !I2C_M_RD;			//写入
-    msg.addr  = client_addr;			//从设备地址
-    msg.len   = len;							//长度直接等于(寄存器地址长度+写入的数据字节数)
-    msg.buf   = buf;						//直接连续写入缓冲区中的数据(包括了寄存器地址)
+//    GTP_DEBUG_FUNC();
+//    /*一个写数据的过程只需要一个传输过程:
+//     * 1. IIC连续 写入 数据寄存器地址及数据
+//     * */
+//    msg.flags = !I2C_M_RD;			//写入
+//    msg.addr  = client_addr;			//从设备地址
+//    msg.len   = len;							//长度直接等于(寄存器地址长度+写入的数据字节数)
+//    msg.buf   = buf;						//直接连续写入缓冲区中的数据(包括了寄存器地址)
 
-    while(retries < 5)
-    {
-        ret = I2C_Transfer(&msg, 1);	//调用IIC数据传输过程函数，1个传输过程
-        if (ret == 1)break;
-        retries++;
-    }
-    if((retries >= 5))
-    {
+//    while(retries < 5)
+//    {
+//        ret = I2C_Transfer(&msg, 1);	//调用IIC数据传输过程函数，1个传输过程
+//        if (ret == 1)break;
+//        retries++;
+//    }
+//    if((retries >= 5))
+//    {
 
-        GTP_ERROR("I2C Write: 0x%04X, %d bytes failed, errcode: %d! Process reset.", (((uint16_t)(buf[0] << 8)) | buf[1]), len-2, ret);
+//        GTP_ERROR("I2C Write: 0x%04X, %d bytes failed, errcode: %d! Process reset.", (((uint16_t)(buf[0] << 8)) | buf[1]), len-2, ret);
 
-    }
-    return ret;
-}
+//    }
+//    return ret;
+//}
 
 
 

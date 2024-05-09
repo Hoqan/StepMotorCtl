@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'StepMotorCtlF4' 
+ * Project: 'StepCtlF429' 
  * Target:  'StepMotorCtlF4' 
  */
 

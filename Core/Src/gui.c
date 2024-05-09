@@ -218,11 +218,14 @@ static void addSubDeal(SingleNum *singleNum)
 
 void guiInit(void)
 {
+		/* 必须先初始化触摸屏, 读取触摸芯片ID以判断不同尺寸类型的屏幕 */
+    GTP_Init_ReadID();
+	
     /* LCD 端口初始化 */ 
     LCD_Init();
     /* LCD 第一层初始化 */ 
     LCD_LayerInit(0, LCD_FB_START_ADDRESS,ARGB8888);
-	/* LCD 第二层初始化 */ 
+		/* LCD 第二层初始化 */ 
     LCD_LayerInit(1, LCD_FB_START_ADDRESS+(LCD_GetXSize()*LCD_GetYSize()*4),ARGB8888);
     /* 使能LCD，包括开背光 */ 
     LCD_DisplayOn(); 
@@ -230,8 +233,8 @@ void guiInit(void)
     /* 选择LCD第一层 */
     LCD_SelectLayer(0);
 
-    /* 第一层清屏，显示全黑 */ 
-    LCD_Clear(LCD_COLOR_BLACK);  
+    /* 第一层清屏，显示全白 */ 
+    LCD_Clear(LCD_COLOR_WHITE);  
 
     /* 选择LCD第二层 */
     LCD_SelectLayer(1);
@@ -243,7 +246,15 @@ void guiInit(void)
     LCD_SetTransparency(0, 255);
     LCD_SetTransparency(1, 0);
 		
-		LCD_DisplayStringLine(10, (uint8_t *)"hello");
+    /* 选择LCD第一层 */
+    LCD_SelectLayer(0);
+	
+		/* 清屏，显示全白 */
+		LCD_Clear(LCD_COLOR_WHITE);	
+		/*设置字体颜色及字体的背景颜色(此处的背景不是指LCD的背景层！注意区分)*/
+		LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_WHITE);
+		/*选择字体*/
+		LCD_SetFont(&Font16);		
 }
 
 void guiTask()
@@ -309,19 +320,60 @@ void guiTask()
 		default:
 			break;
 	}
-	
-	sprintf(accBuff, "acc:     %5d ", (int)(acc*1000));
-	sprintf(velBuff, "speed:   %5d ", (int)(speed*1000));
-	sprintf(posBuff, "distant: %5d ", (int)(distance*1000));
-	sprintf(realPosBuff, "realdist:%5d ", (int)(realDistance*1000));
-	sprintf(modeBuff, "mode:    %5d", mode);
-	sprintf(equalValBuff, "dangliang:  %.2f", equalVal);
 
-	LCD_DisplayStringLine(0, (uint8_t *)accBuff);
-	LCD_DisplayStringLine(1, (uint8_t *)velBuff);
-	LCD_DisplayStringLine(2, (uint8_t *)posBuff);
-	LCD_DisplayStringLine(3, (uint8_t *)realPosBuff);
-	LCD_DisplayStringLine(4, (uint8_t *)modeBuff);
-	LCD_DisplayStringLine(5, (uint8_t *)equalValBuff);
+/**
+ * -------------> X
+ * |
+ * |
+ * |
+ * Y
+ */	
+	
+	// X轴
+	LCD_DisplayChar(80, 0, 'X');
+	LCD_DrawCharCH(80 + 16, 0, 16, 16, ZHOU_I, 0);
+	// Y轴
+	LCD_DisplayChar(375, 0, 'Y');
+	LCD_DrawCharCH(375 + 16, 0, 16, 16, ZHOU_I, 0);
+	
+	// 加速度
+	LCD_DrawCharCH(0,16,16,16,JIA_I,0);
+	LCD_DrawCharCH(16,16,16,16,SU_I,0);
+	LCD_DrawCharCH(32,16,16,16,DU_I,0);
+	// 速度
+	LCD_DrawCharCH(0,32,16,16,SU_I,0);
+	LCD_DrawCharCH(16,32,16,16,DU_I,0);
+	
+	// 理论距离
+	LCD_DrawCharCH(0,64,16,16,LI_I,0);
+	LCD_DrawCharCH(16,64,16,16,LUN_I,0);
+	LCD_DrawCharCH(32,64,16,16,JU_I,0);
+	LCD_DrawCharCH(48,64,16,16,JULI_L_I,0);
+	// 实际距离
+	LCD_DrawCharCH(0,80,16,16,SHI_I,0);
+	LCD_DrawCharCH(16,80,16,16,JI_I,0);
+	LCD_DrawCharCH(32,80,16,16,JU_I,0);
+	LCD_DrawCharCH(48,80,16,16,JULI_L_I,0);
+	// 当量
+	LCD_DrawCharCH(144,64,16,16,DANG_I,0);
+	LCD_DrawCharCH(144 + 16,64,16,16,LIANG_I,0);
+	
+	// 模式
+	LCD_DrawCharCH(0,112,16,16,MOUSHI_M_I,0);
+	LCD_DrawCharCH(16,112,16,16,MOUSHI_S_I,0);
+//	LCD_DisplayStringLineEx(0,5,16,16,(uint8_t* )"F429 16*16 ",0);
+//	sprintf(accBuff, "acc:     %5d ", (int)(acc*1000));
+//	sprintf(velBuff, "speed:   %5d ", (int)(speed*1000));
+//	sprintf(posBuff, "distant: %5d ", (int)(distance*1000));
+//	sprintf(realPosBuff, "realdist:%5d ", (int)(realDistance*1000));
+//	sprintf(modeBuff, "mode:    %5d", mode);
+//	sprintf(equalValBuff, "dangliang:  %.2f", equalVal);
+
+//	LCD_DisplayStringLine(0, (uint8_t *)accBuff);
+//	LCD_DisplayStringLine(1, (uint8_t *)velBuff);
+//	LCD_DisplayStringLine(2, (uint8_t *)posBuff);
+//	LCD_DisplayStringLine(3, (uint8_t *)realPosBuff);
+//	LCD_DisplayStringLine(4, (uint8_t *)modeBuff);
+//	LCD_DisplayStringLine(5, (uint8_t *)equalValBuff);
 	// OLED_Clear();
 }

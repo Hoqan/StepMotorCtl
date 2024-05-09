@@ -12,8 +12,8 @@ extern uint8_t yAxisStartFlg;
 extern uint8_t yAxisDccFlg;
 extern uint8_t yAxisStopFlg;
 
-#define DIA_ACTIVE (HAL_GPIO_ReadPin(DI_A_GPIO_Port, DI_A_Pin) == GPIO_PIN_RESET) 
-#define DIB_ACTIVE  (HAL_GPIO_ReadPin(DI_B_GPIO_Port, DI_B_Pin) == GPIO_PIN_RESET)
+#define DIA_ACTIVE (HAL_GPIO_ReadPin(DIA_GPIO_Port, DIA_Pin) == GPIO_PIN_RESET) 
+#define DIB_ACTIVE  (HAL_GPIO_ReadPin(DIB_GPIO_Port, DIB_Pin) == GPIO_PIN_RESET)
 
 uint8_t xAccStartFlg;
 uint8_t xDccStartFlg;

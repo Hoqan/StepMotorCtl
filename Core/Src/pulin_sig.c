@@ -143,34 +143,34 @@ void judgeMaxFreq()
 //	return started;
 //}
 
-void freqCalcHandler()
-{
-    if(uhCaptureIndex == 0)
-    {
-      /* Get the 1st Input Capture value */
-      uwIC2Value1 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1);
-      uhCaptureIndex = 1;
-    }
-    else if(uhCaptureIndex == 1)
-    {
-      /* Get the 2nd Input Capture value */
-      uwIC2Value2 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1); 
-      
-      /* Capture computation */
-      if (uwIC2Value2 > uwIC2Value1)
-      {
-        uwDiffCapture = (uwIC2Value2 - uwIC2Value1); 
-      }
-      else  /* (uwIC2Value2 <= uwIC2Value1) */
-      {
-        uwDiffCapture = ((0xFFFF - uwIC2Value1) + uwIC2Value2); 
-      }
+//void freqCalcHandler()
+//{
+//    if(uhCaptureIndex == 0)
+//    {
+//      /* Get the 1st Input Capture value */
+//      uwIC2Value1 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1);
+//      uhCaptureIndex = 1;
+//    }
+//    else if(uhCaptureIndex == 1)
+//    {
+//      /* Get the 2nd Input Capture value */
+//      uwIC2Value2 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1); 
+//      
+//      /* Capture computation */
+//      if (uwIC2Value2 > uwIC2Value1)
+//      {
+//        uwDiffCapture = (uwIC2Value2 - uwIC2Value1); 
+//      }
+//      else  /* (uwIC2Value2 <= uwIC2Value1) */
+//      {
+//        uwDiffCapture = ((0xFFFF - uwIC2Value1) + uwIC2Value2); 
+//      }
 
-      /* Frequency computation: for this example TIMx (TIM1) is clocked by
-         2xAPB2Clk */      
-      uwFrequency = (2*HAL_RCC_GetPCLK1Freq()/168) / uwDiffCapture;
-			uwFreqSingle = uwFrequency;
-			freqUpdated = true;
-      uhCaptureIndex = 0;
-    }	
-}
+//      /* Frequency computation: for this example TIMx (TIM1) is clocked by
+//         2xAPB2Clk */      
+//      uwFrequency = (2*HAL_RCC_GetPCLK1Freq()/168) / uwDiffCapture;
+//			uwFreqSingle = uwFrequency;
+//			freqUpdated = true;
+//      uhCaptureIndex = 0;
+//    }	
+//}

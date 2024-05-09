@@ -14,6 +14,23 @@
 #define ARGB1555 	LTDC_PIXEL_FORMAT_ARGB1555  /*!< ARGB1555 LTDC像素格式 */
 #define ARGB4444 	LTDC_PIXEL_FORMAT_ARGB4444  /*!< ARGB4444 LTDC像素格式 */
 
+
+#define JIA_I 0
+#define SU_I 1
+#define DU_I 2
+#define LI_I 3
+#define LUN_I 4
+#define SHI_I 5
+#define JI_I 6
+#define JU_I 7
+#define JULI_L_I 8
+#define MOUSHI_M_I 9
+#define MOUSHI_S_I 10
+#define ZHOU_I 11
+#define DANG_I 12
+#define LIANG_I 13
+
+
 /** 
   * @brief  LCD液晶参数
   */   
@@ -364,4 +381,10 @@ void LCD_DisplayStringLineEx(uint16_t x, //显示的x点
 														 uint16_t Font_Heig,	//要显示的字体高度，注意为偶数
 														 uint8_t *ptr,				//显示的字符内容
 														 uint16_t DrawModel);  //是否反色显示
+void LCD_DrawCharCH(   uint16_t Xpos, //字符显示位置x
+						uint16_t Ypos, //字符显示位置y
+						uint16_t Font_width, //字符宽度
+						uint16_t Font_Heig,  //字符高度 
+						uint8_t index,			//字模数据
+						uint16_t DrawModel);
 #endif /* __BSP_LCD_H */
