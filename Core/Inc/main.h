@@ -63,8 +63,6 @@ void Error_Handler(void);
 #define SET_GPIO_Port GPIOH
 #define SUB_Pin GPIO_PIN_11
 #define SUB_GPIO_Port GPIOH
-#define ADD_Pin GPIO_PIN_12
-#define ADD_GPIO_Port GPIOH
 #define DO2_Pin GPIO_PIN_13
 #define DO2_GPIO_Port GPIOB
 #define DO4_Pin GPIO_PIN_8
@@ -83,10 +81,10 @@ void Error_Handler(void);
 #define LEFT_LMT_GPIO_Port GPIOC
 #define RIGHT_LMT_Pin GPIO_PIN_11
 #define RIGHT_LMT_GPIO_Port GPIOC
+#define ADD_Pin GPIO_PIN_2
+#define ADD_GPIO_Port GPIOD
 #define SWI_Pin GPIO_PIN_3
 #define SWI_GPIO_Port GPIOD
-#define IN5V_PUL_Pin GPIO_PIN_4
-#define IN5V_PUL_GPIO_Port GPIOB
 #define IN5V_DIR_Pin GPIO_PIN_5
 #define IN5V_DIR_GPIO_Port GPIOB
 #define UP_Pin GPIO_PIN_7

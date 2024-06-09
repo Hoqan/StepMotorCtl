@@ -3,23 +3,45 @@
 
 #include "gpio.h"
 
+#define BUTTON_NUM 10
+
+typedef unsigned char uint8_t;
+
+typedef enum
+{
+	RELEASEED = 0U,
+	PRESED
+} ButtonState;
+
 typedef struct
 {
-	uint8_t MANU;
-	uint8_t AUTO;
-	uint8_t ADD;
-	uint8_t SUB;
-	uint8_t LEFT;
-	uint8_t RIGHT;
-	uint8_t SETTING;
-	uint8_t FORWARD;
-	uint8_t BACK;
-	uint8_t CONFIRM;
+	uint8_t val;
+	ButtonState state;
+	uint8_t clickEvt;
 } Button;
 
-extern Button button;
+typedef union
+{
+	struct
+	{
+		Button SWI;
+		Button S_RST;
+		Button ADD;
+		Button SUB;
+		Button LEFT;
+		Button RIGHT;
+		Button SETTING;
+		Button FORWARD;
+		Button BACK;
+		Button CONFIRM;
+	};
+	Button btns[BUTTON_NUM];
+} Buttons;
 
+extern Buttons buttons;
+
+void buttonInit(void);
 
 void buttonUpdate(void);
-	
+
 #endif /* _BUTTON_H */

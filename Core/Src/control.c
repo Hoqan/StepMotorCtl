@@ -7,13 +7,14 @@
 #include "gpio.h"
 #include "pulin_sig.h"
 #include "gui.h"
+#include "core_cm4.h"
 
 extern uint8_t yAxisStartFlg;
 extern uint8_t yAxisDccFlg;
 extern uint8_t yAxisStopFlg;
 
-#define DIA_ACTIVE (HAL_GPIO_ReadPin(DIA_GPIO_Port, DIA_Pin) == GPIO_PIN_RESET) 
-#define DIB_ACTIVE  (HAL_GPIO_ReadPin(DIB_GPIO_Port, DIB_Pin) == GPIO_PIN_RESET)
+#define DIA_ACTIVE (HAL_GPIO_ReadPin(DIA_GPIO_Port, DIA_Pin) == GPIO_PIN_RESET)
+#define DIB_ACTIVE (HAL_GPIO_ReadPin(DIB_GPIO_Port, DIB_Pin) == GPIO_PIN_RESET)
 
 uint8_t xAccStartFlg;
 uint8_t xDccStartFlg;
@@ -32,8 +33,8 @@ typedef enum
 {
 	INIT = 0U,
 	READY,
-	MANU,
-	AUTO
+	MANU_STATE,
+	AUTO_STATE
 } State;
 
 typedef enum
@@ -44,7 +45,7 @@ typedef enum
 } XDir;
 
 State state;
-uint8_t mode;
+Mode mode;
 XDir xDir;
 uint8_t yDir;
 
@@ -56,13 +57,13 @@ void xAxisManuFlgInput()
 {
 	if (xAxis.state == PROFILE_IDLE)
 	{
-		if (button.LEFT)
+		if (buttons.LEFT.val)
 		{
 			xDir = XDIR_LEFT;
 			HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_SET);
 			*xAxis.flgs.pAccStartFlg = 1;
 		}
-		else if (button.RIGHT)
+		else if (buttons.RIGHT.val)
 		{
 			xDir = XDIR_RIGHT;
 			HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_RESET);
@@ -75,22 +76,20 @@ void xAxisManuFlgInput()
 	}
 	else if (xAxis.state == PROFILE_CONSTANT)
 	{
-		if ((!button.LEFT && (xDir == XDIR_LEFT))
-				|| (!button.RIGHT && (xDir == XDIR_RIGHT)))
+		if ((!buttons.LEFT.val && (xDir == XDIR_LEFT)) || (!buttons.RIGHT.val && (xDir == XDIR_RIGHT)))
 		{
 			*xAxis.flgs.pDccStartFlg = 1;
 		}
 	}
-  else if (xAxis.state == PROFILE_DCC)
+	else if (xAxis.state == PROFILE_DCC)
 	{
 		if (xAxis.flgs.dccFinished)
 		{
 			xAxis.state = PROFILE_IDLE;
-		}		
+		}
 	}
 	else
 	{
-		
 	}
 }
 
@@ -104,13 +103,13 @@ void xAxisAutoFlgInput()
 	{
 		if ((!DIA_ACTIVE) && (!DIB_ACTIVE))
 		{
-			xDir = XDIR_LEFT;	// Íù×ó¾ÀÆ«
+			xDir = XDIR_LEFT; // Íù×ó¾ÀÆ«
 			HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_SET);
 			*xAxis.flgs.pAccStartFlg = 1;
 		}
 		else if (DIA_ACTIVE && DIB_ACTIVE)
 		{
-			xDir = XDIR_RIGHT;	// ÍùÓÒ¾ÀÆ«
+			xDir = XDIR_RIGHT; // ÍùÓÒ¾ÀÆ«
 			HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_RESET);
 			*xAxis.flgs.pAccStartFlg = 1;
 		}
@@ -145,7 +144,7 @@ void xAxisAutoFlgInput()
 				xAxis.state = PROFILE_DCC;
 		}
 	}
-  else if (xAxis.state == PROFILE_DCC)
+	else if (xAxis.state == PROFILE_DCC)
 	{
 		if (xDir == XDIR_LEFT)
 		{
@@ -157,15 +156,14 @@ void xAxisAutoFlgInput()
 			if (!(DIA_ACTIVE && DIB_ACTIVE))
 				xAxis.state = PROFILE_IDLE;
 		}
-		
+
 		if (xAxis.flgs.dccFinished)
 		{
 			xAxis.state = PROFILE_IDLE;
-		}	
+		}
 	}
 	else
 	{
-		
 	}
 }
 
@@ -177,13 +175,13 @@ void yAxisManuFlgInput()
 {
 	if (yAxis.state == PROFILE_IDLE)
 	{
-		if (button.FORWARD)
+		if (buttons.FORWARD.val)
 		{
 			yDir = 1;
 			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
 			*yAxis.flgs.pAccStartFlg = 1;
 		}
-		else if (button.BACK)
+		else if (buttons.BACK.val)
 		{
 			yDir = 2;
 			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);
@@ -196,13 +194,12 @@ void yAxisManuFlgInput()
 	}
 	else if (yAxis.state == PROFILE_CONSTANT)
 	{
-		if ((!button.FORWARD && (yDir == 1))
-				|| (!button.BACK && (yDir == 2)))
+		if ((!buttons.FORWARD.val && (yDir == 1)) || (!buttons.BACK.val && (yDir == 2)))
 		{
 			*yAxis.flgs.pDccStartFlg = 1;
 		}
 	}
-  else if (yAxis.state == PROFILE_DCC)
+	else if (yAxis.state == PROFILE_DCC)
 	{
 		if (yAxis.flgs.dccFinished)
 		{
@@ -211,7 +208,6 @@ void yAxisManuFlgInput()
 	}
 	else
 	{
-		
 	}
 }
 
@@ -225,14 +221,14 @@ void yAxisAutoFlgInput()
 	{
 		// Old method
 		// if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_RESET)
-		
-		if (button.FORWARD)
+
+		if (buttons.FORWARD.val)
 		{
 			yDir = 1;
 			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
 			*yAxis.flgs.pAccStartFlg = 1;
 		}
-		else if (button.BACK)
+		else if (buttons.BACK.val)
 		{
 			yDir = 2;
 			HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);
@@ -242,7 +238,7 @@ void yAxisAutoFlgInput()
 		{
 			yDir = 0;
 		}
-		
+
 		if (isFreqStart())
 		{
 			*yAxis.flgs.pAccStartFlg = 1;
@@ -250,23 +246,22 @@ void yAxisAutoFlgInput()
 			if (HAL_GPIO_ReadPin(IN5V_DIR_GPIO_Port, IN5V_DIR_Pin) == GPIO_PIN_SET) // TODO
 				HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_SET);
 			else
-				HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);	
+				HAL_GPIO_WritePin(DO4_GPIO_Port, DO4_Pin, GPIO_PIN_RESET);
 		}
 	}
 	else if (yAxis.state == PROFILE_CONSTANT)
 	{
-//		uint32_t tim5_cnt = htim5.Instance->CNT;
-//		uint32_t startDeVelPulNum = pulNum - (maxFreq * maxFreq / accFreq) / 2;
-//		if (tim5_cnt >= startDeVelPulNum)
-//		{
-//			yAxis.state = PROFILE_DCC;
-//		}
-		if ((!button.FORWARD && (yDir == 1))
-				|| (!button.BACK && (yDir == 2)))
+		//		uint32_t tim5_cnt = htim5.Instance->CNT;
+		//		uint32_t startDeVelPulNum = pulNum - (maxFreq * maxFreq / accFreq) / 2;
+		//		if (tim5_cnt >= startDeVelPulNum)
+		//		{
+		//			yAxis.state = PROFILE_DCC;
+		//		}
+		if ((!buttons.FORWARD.val && (yDir == 1)) || (!buttons.BACK.val && (yDir == 2)))
 		{
 			*yAxis.flgs.pDccStartFlg = 1;
-		}		
-		
+		}
+
 		if (yDir == 0)
 		{
 			if (isFreqDcc())
@@ -275,48 +270,46 @@ void yAxisAutoFlgInput()
 				*yAxis.flgs.pDccStartFlg = 1;
 			}
 		}
-		
 	}
-  else if (yAxis.state == PROFILE_DCC)
+	else if (yAxis.state == PROFILE_DCC)
 	{
-//		switch (stopJudgeState)
-//		{
-//			case 0:
-//				if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_SET)
-//			  if (yAxisStopFlg)
-//				{
-//					stopJudgeState = 1;
-//				}
-//				break;
-//			case 1:
-////				if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_SET)				
-//				{
-//					stopJudgeCnt++;
-//					if (stopJudgeCnt >= 10)
-//					{
-//						yAxis.state = PROFILE_IDLE;
-//					}
-//				}
-//				else
-//				{
-//					stopJudgeCnt = 0;;
-//				}
-//				if (yAxisStopFlg)
-//				{
-//					yAxisStopFlg = 0;
-//					yAxis.state = PROFILE_IDLE;
-//				}
-	if (yAxis.flgs.dccFinished)
-	{
-		yAxis.state = PROFILE_IDLE;
-	}
-//				break;
-//			default:
-//				break;
+		//		switch (stopJudgeState)
+		//		{
+		//			case 0:
+		//				if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_SET)
+		//			  if (yAxisStopFlg)
+		//				{
+		//					stopJudgeState = 1;
+		//				}
+		//				break;
+		//			case 1:
+		////				if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_SET)
+		//				{
+		//					stopJudgeCnt++;
+		//					if (stopJudgeCnt >= 10)
+		//					{
+		//						yAxis.state = PROFILE_IDLE;
+		//					}
+		//				}
+		//				else
+		//				{
+		//					stopJudgeCnt = 0;;
+		//				}
+		//				if (yAxisStopFlg)
+		//				{
+		//					yAxisStopFlg = 0;
+		//					yAxis.state = PROFILE_IDLE;
+		//				}
+		if (yAxis.flgs.dccFinished)
+		{
+			yAxis.state = PROFILE_IDLE;
+		}
+		//				break;
+		//			default:
+		//				break;
 	}
 	else
 	{
-		
 	}
 }
 
@@ -327,130 +320,129 @@ void leftRightLimit()
 		if (xDir == XDIR_RIGHT)
 		{
 			xAxis.outputFreq = xAxis.curFreq = 1;
-		  setFreq(&htim1, xAxis.outputFreq);
-		  xAxis.state = PROFILE_IDLE;
+			setFreq(&htim1, xAxis.outputFreq);
+			xAxis.state = PROFILE_IDLE;
 		}
 	}
-	
+
 	if (HAL_GPIO_ReadPin(LEFT_LMT_GPIO_Port, LEFT_LMT_Pin) == GPIO_PIN_RESET)
 	{
 		if (xDir == XDIR_LEFT)
 		{
 			xAxis.outputFreq = xAxis.curFreq = 1;
-		  setFreq(&htim1, xAxis.outputFreq);
-		  xAxis.state = PROFILE_IDLE;
+			setFreq(&htim1, xAxis.outputFreq);
+			xAxis.state = PROFILE_IDLE;
 		}
 	}
 }
 
 void ctlInit()
 {
-	motionParamUpd();
-	
+	motionParamInit();
+
 	xAxis.curFreq = 1;
-  xAxis.outputFreq = 1;
+	xAxis.outputFreq = 1;
 	xAxis.flgs.pAccStartFlg = &xAccStartFlg;
 	xAxis.flgs.pDccStartFlg = &xDccStartFlg;
 	xAxis.flgs.pIdleFlg = &xIdleFlg;
-//	xAxis.velProfPa.accFreq = accFreq;
-//	xAxis.velProfPa.accFreqStep = freqStep;
-//	xAxis.velProfPa.maxFreq = maxFreq;
-//	xAxis.velProfPa.dccFreq = accFreq;
-//	xAxis.velProfPa.dccFreqStep = freqStep;
-	xAxis.velProfPa.accFreq = 2 * accFreq;
-	xAxis.velProfPa.accFreqStep = xAxis.velProfPa.accFreq  * 0.002;
-	xAxis.velProfPa.maxFreq = 2 * maxFreq;
-	xAxis.velProfPa.dccFreq = 2 * accFreq;
-	xAxis.velProfPa.dccFreqStep = xAxis.velProfPa.dccFreq  * 0.002;
-	
+
+//	xAxis.velProfPa.accFreq = 2 * accFreq;
+//	xAxis.velProfPa.accFreqStep = xAxis.velProfPa.accFreq * 0.002;
+//	xAxis.velProfPa.maxFreq = 2 * maxFreq;
+//	xAxis.velProfPa.dccFreq = 2 * accFreq;
+//	xAxis.velProfPa.dccFreqStep = xAxis.velProfPa.dccFreq * 0.002;
+
 	yAxis.curFreq = 1;
 	yAxis.outputFreq = 1;
 	yAxis.flgs.pAccStartFlg = &yAccStartFlg;
 	yAxis.flgs.pDccStartFlg = &yDccStartFlg;
 	yAxis.flgs.pIdleFlg = &yIdleFlg;
-	yAxis.velProfPa.accFreq = accFreq;
-	yAxis.velProfPa.accFreqStep = freqStep;
-	yAxis.velProfPa.maxFreq = maxFreq;
-	yAxis.velProfPa.dccFreq = accFreq;
-	yAxis.velProfPa.dccFreqStep = freqStep;
+//	yAxis.velProfPa.accFreq = accFreq;
+//	yAxis.velProfPa.accFreqStep = freqStep;
+//	yAxis.velProfPa.maxFreq = maxFreq;
+//	yAxis.velProfPa.dccFreq = accFreq;
+//	yAxis.velProfPa.dccFreqStep = freqStep;
 }
 
 void ctlFixedUpd()
 {
-	if (button.MANU)
-		mode = 1;
-	else if (button.AUTO)
-		mode = 2;
-	
+	if (buttons.SWI.clickEvt)
+	{
+		buttons.SWI.clickEvt = 0;
+		mode = (mode == MANU) ? AUTO : MANU;
+	}
+	else if (buttons.S_RST.clickEvt)
+	{
+		buttons.S_RST.clickEvt = 0;
+		NVIC_SystemReset();	
+	}
+
 	switch (state)
 	{
-		case INIT:
-				if (HAL_GPIO_ReadPin(RIGHT_LMT_GPIO_Port, RIGHT_LMT_Pin) == GPIO_PIN_SET)
-				{
-					// XÖáÏòÓÒÒÆ¶¯
-					HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_RESET);
-					xAxis.curFreq += 50;
-					if (xAxis.curFreq >= 6000)
-						xAxis.curFreq = 6000;
-					xAxis.outputFreq = xAxis.curFreq;
-				}
-				else
-				{
-					xAxis.curFreq = 1;
-					xAxis.outputFreq = 1;
-					mode = 1;
-					state = READY;		
-				}
-				setFreq(&htim1, xAxis.outputFreq);
-				
-			break;
-		case READY:
-			if (mode == 1)
-			{
-				state = MANU;
-			}
-			else if (mode == 2)
-			{
-				state = AUTO;
-			}
-			break;
-		case MANU:
-			if (guiState == SETTINGS)
-				return;
-			xAxisManuFlgInput();
-			//yAxisManuFlgInput();
-		  yAxisAutoFlgInput();
-			if (yAxis.state == PROFILE_IDLE
-					&& xAxis.state == PROFILE_IDLE
-					&& mode == 2)
-			{
-				state = AUTO;
-			}
-			velProfileCtl(&xAxis);
-			setFreq(&htim1, xAxis.outputFreq);
+	case INIT:
+		if (HAL_GPIO_ReadPin(RIGHT_LMT_GPIO_Port, RIGHT_LMT_Pin) == GPIO_PIN_SET)
+		{
+			// XÖáÏòÓÒÒÆ¶¯
+			HAL_GPIO_WritePin(DO2_GPIO_Port, DO2_Pin, GPIO_PIN_RESET);
+			xAxis.curFreq += 50;
+			if (xAxis.curFreq >= 10000)
+				xAxis.curFreq = 10000;
+			xAxis.outputFreq = xAxis.curFreq;
+		}
+		else
+		{
+			xAxis.curFreq = 1;
+			xAxis.outputFreq = 1;
+			mode = MANU;
+			state = READY;
+		}
+		setFreq(&htim1, xAxis.outputFreq);
 
-			velProfileCtl(&yAxis);
-			setFreq(&htim8, yAxis.outputFreq);
-			break;
-		case AUTO:
-			if (guiState == SETTINGS)
-				return;
-			xAxisAutoFlgInput();
-			yAxisAutoFlgInput();
-		  if (yAxis.state == PROFILE_IDLE && mode == 1)
-			{
-				state = MANU;
-			}
-			velProfileCtl(&xAxis);
-			setFreq(&htim1, xAxis.outputFreq);
+		break;
+	case READY:
+		if (mode == MANU)
+		{
+			state = MANU_STATE;
+		}
+		else if (mode == AUTO)
+		{
+			state = AUTO_STATE;
+		}
+		break;
+	case MANU_STATE:
+		if (guiState == SETTINGS)
+			return;
+		xAxisManuFlgInput();
+		// yAxisManuFlgInput();
+		yAxisAutoFlgInput();
+		if (yAxis.state == PROFILE_IDLE && xAxis.state == PROFILE_IDLE && mode == AUTO)
+		{
+			state = AUTO_STATE;
+		}
+		velProfileCtl(&xAxis);
+		setFreq(&htim1, xAxis.outputFreq);
 
-			velProfileCtl(&yAxis);
-			setFreq(&htim8, yAxis.outputFreq);
-			break;
-		default:
-			break;
+		velProfileCtl(&yAxis);
+		setFreq(&htim8, yAxis.outputFreq);
+		break;
+	case AUTO_STATE:
+		if (guiState == SETTINGS)
+			return;
+		xAxisAutoFlgInput();
+		yAxisAutoFlgInput();
+		if (yAxis.state == PROFILE_IDLE && mode == MANU)
+		{
+			state = MANU_STATE;
+		}
+		velProfileCtl(&xAxis);
+		setFreq(&htim1, xAxis.outputFreq);
+
+		velProfileCtl(&yAxis);
+		setFreq(&htim8, yAxis.outputFreq);
+		break;
+	default:
+		break;
 	} /* state */
-	
+
 	leftRightLimit();
 }
-

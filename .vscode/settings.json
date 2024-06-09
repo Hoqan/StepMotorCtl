@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "motion_param.h": "c",
+        "control.h": "c",
+        "gpio.h": "c",
+        "button.h": "c",
+        "gui.h": "c"
+    }
+}

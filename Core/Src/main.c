@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -53,7 +53,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile uint32_t pulseCnt;
+volatile uint32_t pulseFreq;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,6 +82,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+
   HAL_Init();
 
   /* USER CODE BEGIN Init */
@@ -99,23 +101,26 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM6_Init();
   MX_TIM8_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-	guiInit();
+  buttonInit();
+  guiInit();
 
-	setFreq(&htim1, 1);
-	setFreq(&htim8, 1);
+  setFreq(&htim1, 1);
+  setFreq(&htim8, 1);
 
-	ctlInit();
+  ctlInit();
 
   // Control loop 2ms
-	__HAL_TIM_CLEAR_IT(&htim6, TIM_IT_UPDATE);
-	HAL_TIM_Base_Start_IT(&htim6);
-	
-	// X and Y axis output
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  __HAL_TIM_CLEAR_IT(&htim6, TIM_IT_UPDATE);
+  HAL_TIM_Base_Start_IT(&htim6);
 
-	// HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+  // X and Y axis output
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
+	
+  // HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
   /* USER CODE END 2 */
 
@@ -123,8 +128,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		buttonUpdate();		
-		guiTask();
+    buttonUpdate();
+    guiTask();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -153,7 +158,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
+  RCC_OscInitStruct.PLL.PLLM = 8;
   RCC_OscInitStruct.PLL.PLLN = 360;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
@@ -186,124 +191,66 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void  HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)    //定时器中断回调函数
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // 定时器中断回调函数
 {
-//	if(htim == &htim2)
-//	{ 
-//		if (zhenShu == 0)
-//		{
-//			HAL_TIM_Base_Stop(&htim2);
-//			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);			 
-//		}
-//		else if (zhenShu > 0)
-//		{
-//			cnt++;
-//			if (cnt == zhenShu)
-//			{
-//				htim2.Instance->ARR = xiaoShu - 1;
-//			}
-//		}
-//		else if (cnt == zhenShu + 1)
-//		{
-//			HAL_TIM_Base_Stop(&htim2);
-//			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-//		}
-//	}
-	 
-//	if (htim == &htim5)
-//	{
-//			HAL_TIM_Base_Stop(&htim2);
-//			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);		
-//	}
-	
-	if (htim == &htim6)
-	{
-		ctlFixedUpd();
-	}
+  //	if(htim == &htim2)
+  //	{
+  //		if (zhenShu == 0)
+  //		{
+  //			HAL_TIM_Base_Stop(&htim2);
+  //			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+  //		}
+  //		else if (zhenShu > 0)
+  //		{
+  //			cnt++;
+  //			if (cnt == zhenShu)
+  //			{
+  //				htim2.Instance->ARR = xiaoShu - 1;
+  //			}
+  //		}
+  //		else if (cnt == zhenShu + 1)
+  //		{
+  //			HAL_TIM_Base_Stop(&htim2);
+  //			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+  //		}
+  //	}
+
+  //	if (htim == &htim5)
+  //	{
+  //			HAL_TIM_Base_Stop(&htim2);
+  //			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+  //	}
+
+  if (htim == &htim6)
+  {
+		pulseFreq = pulseCnt;
+    ctlFixedUpd();
+		pulseCnt = 0;
+  }
 }
 
 /**
-  * @brief  Conversion complete callback in non blocking mode 
-  * @param  htim: TIM handle
+ * @brief  Conversion complete callback in non blocking mode
+ * @param  htim: TIM handle
+ * @retval None
+ */
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+   if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+   {
+			freqCalcHandler();
+   }
+}
+ 
+/**
+  * @brief EXTI line detection callbacks
+  * @param GPIO_Pin: Specifies the pins connected EXTI line
   * @retval None
   */
-//void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-//{
-//  if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
-//  {
-//		// freqCalcHandler();
-//  }
-//}
-
-//void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-//{
-//	if (htim == &htim3)
-//	{
-//		switch (capState)
-//		{
-//			case 0:  // 未捕获
-//				capState = 1;
-//			case 1:  // 捕获到下降沿
-//				capState = 2;
-//			  if (!yAxisStarted && yAxisStoped)
-//				{
-//			    yAxisStartFlg = 1;
-//					yAxisStarted = 1;
-//					yAxisDcced = 0;
-//					yAxisStoped = 0;
-//				}
-//				__HAL_TIM_DISABLE(&htim3);
-//				__HAL_TIM_SET_COUNTER(&htim3, 0);
-//			  TIM_RESET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1);
-//				TIM_SET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1, TIM_ICPOLARITY_RISING);
-//			  __HAL_TIM_ENABLE(&htim3);
-//				break;
-//			case 2:  // 捕获到上升沿
-//				capState = 0;
-//				capVal = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1);	
-//			  if (capVal < minCapVal)
-//				{
-//					minCapVal = capVal;
-//					stopJudgeCnt = 0;
-//				}
-//				else if (capVal > minCapVal + 10)  // TODO
-//				{
-//					dccJudgeCnt++;
-//					if (dccJudgeCnt >= 10)
-//					{
-//						if (!yAxisDcced)
-//						{
-//							yAxisDccFlg = 1;
-//							yAxisDcced = 1;
-//						}
-//					  dccJudgeCnt = 0;
-//					}
-//				}
-//				
-//				if (capVal > 60000)
-//				{
-//					stopJudgeCnt++;
-//					if (stopJudgeCnt >= 10)
-//					{
-//						stopJudgeCnt = 0;
-//						if (!yAxisStoped)
-//						{
-//							yAxisStopFlg = 1;
-//						  yAxisStoped = 1;
-//							yAxisStarted = 0;
-//						}
-//					  
-//					}
-//				}
-//				
-//				TIM_RESET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1);
-//			  TIM_SET_CAPTUREPOLARITY(&htim3, TIM_CHANNEL_1, TIM_ICPOLARITY_FALLING);
-//			break;
-//			default:
-//				break;
-//		}
-//	}
-//}
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	pulseCnt++;
+}
 
 /* USER CODE END 4 */
 

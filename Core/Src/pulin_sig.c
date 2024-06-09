@@ -1,6 +1,8 @@
 #include "pulin_sig.h"
 #include "tim.h"
 
+extern volatile uint32_t pulseCnt;
+
 /* Captured Values */
 uint32_t               uwIC2Value1 = 0;
 uint32_t               uwIC2Value2 = 0;
@@ -27,19 +29,20 @@ bool isFreqStart()
 	// static uint32_t prevFreq = 0;
 	bool started = 0;
 	
-#if 1
+	
+#if 0
 	if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_RESET)
 	{
 		started = true;
 	}
-#else
+#elif 0
 	if (freqUpdated)
 	{
 		freqUpdated = 0;
 		if (uwFreqSingle > prevFreq)
 		{
 			startJudgeCnt++;
-			if (startJudgeCnt >= 10)
+			if (startJudgeCnt >= 3)
 			{
 				startJudgeCnt = 0;
 				// prevFreq = 0;
@@ -53,6 +56,32 @@ bool isFreqStart()
 		prevFreq = uwFreqSingle;
 		uwFreqSingle = 0;  // 用完清零		
 	}
+#elif 0
+	if (freqUpdated)
+	{
+		freqUpdated = 0;
+		if (uwFreqSingle > 3000)
+		{
+			startJudgeCnt++;
+			if (startJudgeCnt >= 3)
+			{
+				startJudgeCnt = 0;
+				// prevFreq = 0;
+				started = true;
+			}
+		}
+		else
+		{
+			startJudgeCnt = 0;
+		}
+		prevFreq = uwFreqSingle;
+		uwFreqSingle = 0;  // 用完清零		
+	}
+#else
+	if (pulseCnt >= 2)
+	{
+		started = true;	
+	}
 #endif
 	
 	return started;
@@ -61,10 +90,9 @@ bool isFreqStart()
 bool isFreqDcc()
 {
 	static uint32_t cnt = 0;
-	// static uint32_t prevFreq = 0;
-	uint8_t started = 0;
+	uint8_t stoped = 0;
 
-#if 1
+#if 0
 	if (HAL_GPIO_ReadPin(IN5V_PUL_GPIO_Port, IN5V_PUL_Pin) == GPIO_PIN_SET)
 	{
 		cnt++;
@@ -78,19 +106,19 @@ bool isFreqDcc()
 	{
 		cnt = 0;
 	}
-#else
+#elif 0
 	if (freqUpdated)
 	{
 		freqUpdated = false;
 		if (uwFreqSingle < prevFreq)
 		{
 			cnt++;
-			if (cnt >= 1)
+			if (cnt >= 3)
 			{
 				cnt = 0;
 				uwFreqSingle = 0;
 				prevFreq = 0;
-				started = 1;
+				stoped = 1;
 			}	
 		}
 		else
@@ -100,9 +128,35 @@ bool isFreqDcc()
 		prevFreq = uwFreqSingle;		
 		uwFreqSingle = 0;  // 用完清零
 	}
+
+#elif 0
+	if (freqUpdated)
+	{
+		freqUpdated = false;
+		if (uwFreqSingle < 3000)
+		{
+			cnt++;
+			if (cnt >= 3)
+			{
+				cnt = 0;
+				uwFreqSingle = 0;
+				prevFreq = 0;
+				stoped = 1;
+			}	
+		}
+		else
+		{
+			cnt = 0;
+		}	
+		prevFreq = uwFreqSingle;		
+		uwFreqSingle = 0;  // 用完清零
+	}
+#else
+  if (pulseCnt <= 2)
+		stoped = true;
 #endif
 	
-	return started;
+	return stoped;
 }
 
 void judgeMaxFreq()
@@ -143,34 +197,35 @@ void judgeMaxFreq()
 //	return started;
 //}
 
-//void freqCalcHandler()
-//{
-//    if(uhCaptureIndex == 0)
-//    {
-//      /* Get the 1st Input Capture value */
-//      uwIC2Value1 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1);
-//      uhCaptureIndex = 1;
-//    }
-//    else if(uhCaptureIndex == 1)
-//    {
-//      /* Get the 2nd Input Capture value */
-//      uwIC2Value2 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1); 
-//      
-//      /* Capture computation */
-//      if (uwIC2Value2 > uwIC2Value1)
-//      {
-//        uwDiffCapture = (uwIC2Value2 - uwIC2Value1); 
-//      }
-//      else  /* (uwIC2Value2 <= uwIC2Value1) */
-//      {
-//        uwDiffCapture = ((0xFFFF - uwIC2Value1) + uwIC2Value2); 
-//      }
+void freqCalcHandler()
+{
+    if(uhCaptureIndex == 0)
+    {
+      /* Get the 1st Input Capture value */
+      // uwIC2Value1 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1);
+      uhCaptureIndex = 1;
+    }
+    else if(uhCaptureIndex == 1)
+    {
+      /* Get the 2nd Input Capture value */
+      // uwIC2Value2 = HAL_TIM_ReadCapturedValue(&htim3, TIM_CHANNEL_1); 
+      
+      /* Capture computation */
+      if (uwIC2Value2 > uwIC2Value1)
+      {
+        uwDiffCapture = (uwIC2Value2 - uwIC2Value1); 
+      }
+      else  /* (uwIC2Value2 <= uwIC2Value1) */
+      {
+        uwDiffCapture = ((0xFFFF - uwIC2Value1) + uwIC2Value2); 
+      }
 
-//      /* Frequency computation: for this example TIMx (TIM1) is clocked by
+      /* Frequency computation: for this example TIMx (TIM1) is clocked by
 //         2xAPB2Clk */      
 //      uwFrequency = (2*HAL_RCC_GetPCLK1Freq()/168) / uwDiffCapture;
-//			uwFreqSingle = uwFrequency;
-//			freqUpdated = true;
-//      uhCaptureIndex = 0;
-//    }	
-//}
+			uwFrequency = (2*HAL_RCC_GetPCLK1Freq()/900) / uwDiffCapture;
+			uwFreqSingle = uwFrequency;
+			freqUpdated = true;
+      uhCaptureIndex = 0;
+    }	
+}
